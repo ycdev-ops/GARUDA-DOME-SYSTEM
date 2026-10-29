@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #020617; /* slate-950 */
+    color: #f8fafc; /* slate-50 */
+    overflow-x: hidden;
+  }
+  
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Tactical Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Radar scanline animation for tactical display */
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar {
+  animation: radar-sweep 6s linear infinite;
+  transform-origin: center center;
+}
+
+/* Cyber Warfare Glitch Animations */
+@keyframes cyber-glitch {
+  0% {
+    transform: translate(0);
+    text-shadow: -1.5px 0 #06b6d4, 1.5px 0 #f43f5e;
+  }
+  20% {
+    transform: translate(-1.5px, 1px);
+    text-shadow: 1.5px 0 #06b6d4, -1.5px 0 #f43f5e;
+  }
+  40% {
+    transform: translate(-0.5px, -1px);
+    text-shadow: -1.5px 0 #10b981, 1.5px 0 #06b6d4;
+  }
+  60% {
+    transform: translate(1.5px, 0.5px);
+    text-shadow: 1.5px 0 #f43f5e, -1.5px 0 #06b6d4;
+  }
+  80% {
+    transform: translate(0.5px, -0.5px);
+    text-shadow: -1px 0 #06b6d4, 1px 0 #10b981;
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: none;
+  }
+}
+
+.animate-glitch {
+  animation: cyber-glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+@keyframes scanline-sweep {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
+  }
+}
+
+.animate-scanline {
+  animation: scanline-sweep 4s linear infinite;
+}
+
+/* CRT / Cyber Scanline background */
+.cyber-grid-scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+}
+
+/* Print styles for proposal PDF generation */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

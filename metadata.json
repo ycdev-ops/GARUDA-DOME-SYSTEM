@@ -1,0 +1,8 @@
+{
+  "name": "Remix Garuda Dome System (GDS) v3 - Multi-Domain Ketahanan Nasional",
+  "description": "Platform ketahanan nasional terintegrasi multi-domain: Pertahanan Udara, IUU Fishing (Maritime Dark Vessel), Illegal Logging (SAR radar), Karhutla, Mitigasi Bencana, Anti-Narkoba, \u0026 Ketahanan Siber berbasis Garuda Brain.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
