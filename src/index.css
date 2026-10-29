@@ -1,375 +1,123 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Navbar } from './components/Navbar';
-import { ArchipelagoTacticalMap } from './components/ArchipelagoTacticalMap';
-import { IndonesiaTheaterMapLive } from './components/IndonesiaTheaterMapLive';
-import { IllegalFishingView } from './components/IllegalFishingView';
-import { IllegalLoggingView } from './components/IllegalLoggingView';
-import { GarudaBrainView } from './components/GarudaBrainView';
-import { NationalResourceHealthView } from './components/NationalResourceHealthView';
-import { GodsEyeSyncConsole } from './components/GodsEyeSyncConsole';
-import { ProposalViewer } from './components/ProposalViewer';
-import { PitchDeckViewer } from './components/PitchDeckViewer';
-import { VideoScriptViewer } from './components/VideoScriptViewer';
-import { IncidentDetailModal } from './components/IncidentDetailModal';
-import { ScenarioSimulatorModal } from './components/ScenarioSimulatorModal';
-import {
-  INITIAL_INCIDENTS,
-  EDGE_NODES,
-  CROSS_DOMAIN_CORRELATIONS,
-} from './data/gdsData';
-import { Incident, DomainType, SimulationScenario } from './types/gds';
-import {
-  FileText,
-  Tv,
-  Film,
-  Shield,
-  RotateCcw,
-  Radio,
-} from 'lucide-react';
-import { tacticalAudio } from './utils/audioTactical';
-import { CyberWarfare3DScene } from './components/CyberWarfare3DScene';
-import { CyberWarfareControlCenter } from './components/CyberWarfareControlCenter';
-import { RealizationProgressHUD, OperationRealizationData } from './components/RealizationProgressHUD';
+@import "tailwindcss";
 
-const speakNarration = (text: string, enabled: boolean, muted: boolean) => {
-  if (!enabled || muted) return;
-  if (!('speechSynthesis' in window)) return;
+:root {
+  color-scheme: dark;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
 
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'id-ID';
-  utterance.rate = 0.9;
-  utterance.pitch = 1.2;
-  utterance.volume = 0.9;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-  const voices = window.speechSynthesis.getVoices();
-  const preferredVoice = voices.find(
-    (voice) =>
-      /(id|indonesia|indonesian|female|woman|women)/i.test(voice.name) ||
-      voice.lang.toLowerCase().startsWith('id')
-  );
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    min-height: 100dvh;
+    margin: 0;
+    background: #020617;
+  }
 
-  if (preferredVoice) utterance.voice = preferredVoice;
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #020617;
+    color: #f8fafc;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-  window.speechSynthesis.speak(utterance);
-};
+  code,
+  pre,
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
 
-export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('tactical_map');
-  const [docsSubTab, setDocsSubTab] = useState<'PROPOSAL' | 'PITCH_DECK' | 'VIDEO_SCRIPT'>('PROPOSAL');
-  const [incidents, setIncidents] = useState<Incident[]>(INITIAL_INCIDENTS);
-  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
-  const [isSimulationOpen, setIsSimulationOpen] = useState(false);
-  const [activeScenario, setActiveScenario] = useState<SimulationScenario | null>(null);
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
-  const [narratorEnabled, setNarratorEnabled] = useState(true);
-  const [theaterMode, setTheaterMode] = useState<'THEATER_C4ISR' | 'MULTI_DOMAIN_GRID'>('THEATER_C4ISR');
-  const [showPosterBriefing, setShowPosterBriefing] = useState(false);
-  const [globalRealizationOp, setGlobalRealizationOp] = useState<OperationRealizationData | null>(null);
-  const [isGlobalRealizationOpen, setIsGlobalRealizationOpen] = useState(false);
-  const [activeDomainFilter, setActiveDomainFilter] = useState<DomainType | 'ALL'>('ALL');
-  const [activeRegionFilter, setActiveRegionFilter] = useState<'ALL' | 'WIB' | 'WITA' | 'WIT'>('ALL');
-  const tabNarration = useRef<string>('');
+.mobile-shell {
+  min-height: 100dvh;
+  padding-bottom: calc(var(--safe-bottom) + 8px);
+  padding-top: calc(var(--safe-top) + 0px);
+}
 
-  useEffect(() => {
-    const updateVoices = () => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.getVoices();
-      }
-    };
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-    updateVoices();
-    window.speechSynthesis?.addEventListener?.('voiceschanged', updateVoices);
+::-webkit-scrollbar-track {
+  background: #020617;
+}
 
-    return () => {
-      window.speechSynthesis?.removeEventListener?.('voiceschanged', updateVoices);
-    };
-  }, []);
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
 
-  useEffect(() => {
-    const tabLabelMap: Record<string, string> = {
-      tactical_map: 'Peta taktis aktif',
-      cyber_command: 'Pusat siber dan tiga dimensi aktif',
-      illegal_fishing: 'Modul ilegal fishing aktif',
-      illegal_logging: 'Modul illegal logging aktif',
-      godseye_sync: 'Gods Eye sync aktif',
-      resource_health: 'Kesehatan sumber daya aktif',
-      garuda_brain: 'Garuda brain aktif',
-      docs_hub: 'Pusat dokumen aktif',
-    };
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
 
-    const current = tabLabelMap[activeTab] ?? 'Sistem operasional aktif';
-    if (current !== tabNarration.current) {
-      tabNarration.current = current;
-      speakNarration(current, narratorEnabled, isAudioMuted);
-    }
-  }, [activeTab, narratorEnabled, isAudioMuted]);
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-  useEffect(() => {
-    if (!narratorEnabled || isAudioMuted) return;
-    speakNarration('Selamat datang di Garuda Dome System. Asisten operasional Anda siap membantu.', narratorEnabled, isAudioMuted);
-  }, []);
+.animate-radar {
+  animation: radar-sweep 6s linear infinite;
+  transform-origin: center center;
+}
 
-  const handleDispatchIncident = (incidentId: string) => {
-    setIncidents((prev) =>
-      prev.map((inc) => {
-        if (inc.id === incidentId) {
-          return { ...inc, status: 'DISPATCHED' as const };
-        }
-        return inc;
-      })
-    );
-    if (selectedIncident && selectedIncident.id === incidentId) {
-      setSelectedIncident((prev) => (prev ? { ...prev, status: 'DISPATCHED' as const } : null));
-    }
+@keyframes cyber-glitch {
+  0% { transform: translate(0); text-shadow: -1.5px 0 #06b6d4, 1.5px 0 #f43f5e; }
+  20% { transform: translate(-1.5px, 1px); text-shadow: 1.5px 0 #06b6d4, -1.5px 0 #f43f5e; }
+  40% { transform: translate(-0.5px, -1px); text-shadow: -1.5px 0 #10b981, 1.5px 0 #06b6d4; }
+  60% { transform: translate(1.5px, 0.5px); text-shadow: 1.5px 0 #f43f5e, -1.5px 0 #06b6d4; }
+  80% { transform: translate(0.5px, -0.5px); text-shadow: -1px 0 #06b6d4, 1px 0 #10b981; }
+  100% { transform: translate(0); text-shadow: none; }
+}
 
-    speakNarration('Perintah diterima. Sumber ancaman telah didistribusikan ke unit operasi.', narratorEnabled, isAudioMuted);
-  };
+.animate-glitch {
+  animation: cyber-glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
 
-  const handleSelectScenario = (scenario: SimulationScenario) => {
-    setActiveScenario(scenario);
-    setActiveTab('tactical_map');
-    const firstInc = incidents.find((i) => scenario.incidentIds.includes(i.id));
-    if (firstInc) {
-      setSelectedIncident(firstInc);
-    }
-    speakNarration(`Skenario ${scenario.codename} aktif. ${scenario.title}.`, narratorEnabled, isAudioMuted);
-  };
+@keyframes scanline-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
 
-  const handleResetScenario = () => {
-    tacticalAudio.playTacticalClick();
-    setActiveScenario(null);
-    setIncidents(INITIAL_INCIDENTS);
-    setActiveDomainFilter('ALL');
-    speakNarration('Status normal dipulihkan. Sistem kembali ke mode siaga standar.', narratorEnabled, isAudioMuted);
-  };
+.animate-scanline {
+  animation: scanline-sweep 4s linear infinite;
+}
 
-  const criticalCount = incidents.filter((i) => i.threatLevel === 'CRITICAL').length;
+.cyber-grid-scanlines {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03));
+  background-size: 100% 3px, 6px 100%;
+}
 
-  return (
-    <div className="mobile-shell min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500/30 selection:text-amber-200">
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenSimulation={() => setIsSimulationOpen(true)}
-        isAudioMuted={isAudioMuted}
-        setIsAudioMuted={setIsAudioMuted}
-        incidentCount={incidents.length}
-        criticalCount={criticalCount}
-        narratorEnabled={narratorEnabled}
-        setNarratorEnabled={setNarratorEnabled}
-      />
+@media (max-width: 767px) {
+  .mobile-shell {
+    min-height: 100dvh;
+  }
 
-      {activeScenario && (
-        <div className="border-b border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11px] font-mono md:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 animate-ping rounded-full bg-amber-400" />
-              <span className="font-bold text-amber-400">LATIHAN SKENARIO AKTIF: {activeScenario.codename}</span>
-            </div>
-            <button
-              onClick={handleResetScenario}
-              className="flex items-center gap-1 rounded border border-slate-700 bg-slate-900 px-2 py-1 text-slate-300 transition-colors hover:text-white"
-            >
-              <RotateCcw className="h-3 w-3" />
-              <span>Kembalikan Status Normal</span>
-            </button>
-          </div>
-        </div>
-      )}
+  body {
+    font-size: 14px;
+  }
+}
 
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 p-3 sm:p-5 lg:p-8">
-        {activeTab === 'tactical_map' && (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-2 rounded-lg border border-[#14263e] bg-[#070f1c] p-2.5 text-[11px] font-mono md:flex-row md:items-center md:justify-between">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="mr-1 font-bold text-slate-400">MODE TAMPILAN PETA:</span>
-                <button
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setTheaterMode('THEATER_C4ISR');
-                    speakNarration('Peta theater C4ISR Indonesia aktif.', narratorEnabled, isAudioMuted);
-                  }}
-                  className={`rounded px-2.5 py-1.5 font-bold transition-all ${
-                    theaterMode === 'THEATER_C4ISR'
-                      ? 'bg-cyan-500 text-slate-950 shadow-md'
-                      : 'border border-slate-800 bg-slate-900 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  INDONESIA THEATER MAP
-                </button>
-                <button
-                  onClick={() => {
-                    tacticalAudio.playTacticalClick();
-                    setTheaterMode('MULTI_DOMAIN_GRID');
-                    speakNarration('Peta multi sektor kepulauan aktif.', narratorEnabled, isAudioMuted);
-                  }}
-                  className={`rounded px-2.5 py-1.5 font-bold transition-all ${
-                    theaterMode === 'MULTI_DOMAIN_GRID'
-                      ? 'bg-amber-400 text-slate-950 shadow-md'
-                      : 'border border-slate-800 bg-slate-900 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  PETA MULTI-SEKTOR
-                </button>
-              </div>
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
 
-              <button
-                onClick={() => {
-                  tacticalAudio.playTacticalClick();
-                  setShowPosterBriefing(true);
-                  speakNarration('Menampilkan briefing poster resmi Garuda Dome.', narratorEnabled, isAudioMuted);
-                }}
-                className="rounded border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 font-bold text-amber-400 transition-colors hover:bg-amber-500/20"
-              >
-                Perisai Cerdas Nusantara
-              </button>
-            </div>
+  .no-print {
+    display: none !important;
+  }
 
-            {theaterMode === 'THEATER_C4ISR' ? <IndonesiaTheaterMapLive /> : <ArchipelagoTacticalMap incidents={incidents} edgeNodes={EDGE_NODES} selectedIncident={selectedIncident} onSelectIncident={(inc) => setSelectedIncident(inc)} activeDomainFilter={activeDomainFilter} setActiveDomainFilter={setActiveDomainFilter} activeRegionFilter={activeRegionFilter} setActiveRegionFilter={setActiveRegionFilter} />}
-          </div>
-        )}
-
-        {activeTab === 'cyber_command' && (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-3 rounded-lg border border-[#14263e] bg-[#070f1c] p-3 text-[11px] font-mono md:flex-row md:items-center md:justify-between">
-              <div className="flex items-center gap-2">
-                <Radio className="h-4 w-4 animate-pulse text-cyan-400" />
-                <span className="font-bold text-white">PUSAT PERTAHANAN SIBER &amp; HOLOGRAFI 3D</span>
-              </div>
-              <span className="text-slate-400">KONSENSUS: BSSN · TNI AU · BALMON KOMINFO</span>
-            </div>
-
-            <CyberWarfare3DScene
-              onRequestExecution={(targetId) => {
-                tacticalAudio.playCriticalAlert();
-                setGlobalRealizationOp({
-                  id: `OP-3D-${targetId}-${Date.now()}`,
-                  codename: 'INTERDIKSI HOLOGRAFIK 3D',
-                  title: `EKSEKUSI TARGET 3D: ${targetId}`,
-                  domain: 'CYBER_DEFENSE',
-                  targetLocation: 'Sektor Teater Pertahanan Nasional',
-                  mgrs: '48N WG 4291 8812',
-                  operatorId: 'OP-KOPASGAT-27',
-                  authorizedAt: new Date().toLocaleTimeString('id-ID'),
-                  assignedUnits: ['Skadron Interseptor KOPASGAT', 'Satsiber TNI', 'Balmon RF Kominfo'],
-                  stages: [
-                    { title: 'OTORISASI KOMANDO 3D', description: 'Kunci enkripsi tervalidasi.', durationSec: 8, agency: 'MABES TNI' },
-                    { title: 'PENGARAHAN GELOMBANG MIKRO', description: 'Pancaran frekuensi terarah ke target.', durationSec: 15, agency: 'PEBNIKA' },
-                    { title: 'PENETRALISIRAN SEKTOR', description: 'Target tereliminasi dari matriks ancaman.', durationSec: 14, agency: 'KOMANDO' },
-                  ],
-                });
-                setIsGlobalRealizationOpen(true);
-                speakNarration('Operasi pertahanan siber dimulai. Target utama dalam proses penetralisiran.', narratorEnabled, isAudioMuted);
-              }}
-            />
-
-            <CyberWarfareControlCenter
-              onTriggerOperation={(op) => {
-                setGlobalRealizationOp(op);
-                setIsGlobalRealizationOpen(true);
-                speakNarration('Kontrol pusat siber mengamankan jaringan dan memulai operasi.', narratorEnabled, isAudioMuted);
-              }}
-            />
-          </div>
-        )}
-
-        {activeTab === 'illegal_fishing' && <IllegalFishingView incidents={incidents} onSelectIncident={(inc) => setSelectedIncident(inc)} />}
-        {activeTab === 'illegal_logging' && <IllegalLoggingView incidents={incidents} onSelectIncident={(inc) => setSelectedIncident(inc)} />}
-        {activeTab === 'godseye_sync' && <GodsEyeSyncConsole />}
-        {activeTab === 'resource_health' && <NationalResourceHealthView />}
-        {activeTab === 'garuda_brain' && <GarudaBrainView edgeNodes={EDGE_NODES} correlations={CROSS_DOMAIN_CORRELATIONS} />}
-
-        {activeTab === 'docs_hub' && (
-          <div className="space-y-4">
-            <div className="flex w-fit flex-wrap items-center gap-1 rounded-lg border border-slate-800 bg-slate-900 p-1 text-[11px] font-mono">
-              {[
-                ['PROPOSAL', 'Proposal Final Lengkap', FileText],
-                ['PITCH_DECK', '15 Slide Pitch Deck', Tv],
-                ['VIDEO_SCRIPT', 'Script Video Demo', Film],
-              ].map(([key, label, Icon]) => {
-                const active = docsSubTab === key;
-                const IconComp = Icon as any;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => {
-                      tacticalAudio.playTacticalClick();
-                      setDocsSubTab(key as any);
-                      speakNarration(`${label} dibuka.`, narratorEnabled, isAudioMuted);
-                    }}
-                    className={`flex items-center gap-2 rounded px-3 py-1.5 transition-colors ${
-                      active ? 'bg-amber-400 font-bold text-slate-950' : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    <IconComp className="h-3.5 w-3.5" />
-                    <span>{label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {docsSubTab === 'PROPOSAL' && <ProposalViewer />}
-            {docsSubTab === 'PITCH_DECK' && <PitchDeckViewer />}
-            {docsSubTab === 'VIDEO_SCRIPT' && <VideoScriptViewer />}
-          </div>
-        )}
-      </main>
-
-      <IncidentDetailModal
-        incident={selectedIncident}
-        onClose={() => setSelectedIncident(null)}
-        onDispatch={handleDispatchIncident}
-      />
-
-      <ScenarioSimulatorModal
-        isOpen={isSimulationOpen}
-        onClose={() => setIsSimulationOpen(false)}
-        onSelectScenario={handleSelectScenario}
-        activeScenarioId={activeScenario?.id}
-      />
-
-      {showPosterBriefing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-3 backdrop-blur-md">
-          <div className="relative w-full max-w-4xl overflow-hidden rounded-xl border border-amber-500/40 bg-[#09111e] p-2 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 p-3 text-[11px] font-mono">
-              <span className="font-bold uppercase tracking-wider text-amber-400">DOKTRIN PERISAI CERDAS NUSANTARA</span>
-              <button onClick={() => setShowPosterBriefing(false)} className="rounded bg-slate-800 px-2 py-1 text-slate-300 hover:text-white">
-                Tutup
-              </button>
-            </div>
-            <div className="flex items-center justify-center bg-slate-950 p-2">
-              <img src="/assets/aistudio/SmartSelect_20261029_205506_X_74eaa168.jpg" alt="Garuda Dome System - Perisai Cerdas Nusantara" className="h-auto max-h-[75vh] w-full rounded object-contain shadow-2xl" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      <RealizationProgressHUD operation={globalRealizationOp} isOpen={isGlobalRealizationOpen} onClose={() => setIsGlobalRealizationOpen(false)} />
-
-      <footer className="mt-auto border-t border-slate-900 bg-slate-950 px-3 py-4 text-[10px] text-slate-500 font-mono sm:px-4 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-amber-500/70" />
-            <span className="text-slate-400">GARUDA DOME SYSTEM (GDS) v3 · PLATFORM KETAHANAN NASIONAL</span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] text-slate-500">
-            <span>MABES TNI</span>
-            <span>·</span>
-            <span>KLHK</span>
-            <span>·</span>
-            <span>KKP</span>
-            <span>·</span>
-            <span>BAKAMLA</span>
-            <span>·</span>
-            <span>BSSN</span>
-            <span>·</span>
-            <span>BNPB</span>
-            <span>·</span>
-            <span>BNN</span>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
+  .print-only {
+    display: block !important;
+  }
 }
