@@ -1,96 +1,110 @@
-/* Decorative SVG/emoji-style monitor motion for the offline mock command console. */
+/* Local, clearly illustrative motion for the offline tabletop map and mock tiles. */
 [aria-label^="Peta ilustratif simulasi"] {
   isolation: isolate;
+  background-image:
+    radial-gradient(ellipse at 50% 72%, rgba(34, 197, 94, .12), transparent 30%),
+    radial-gradient(ellipse at 72% 35%, rgba(34, 211, 238, .12), transparent 35%);
+}
+
+[aria-label^="Peta ilustratif simulasi"]::before {
+  content: "✈ SEARCH & RESCUE · DEMO     🌲 FOREST WATCH · MOCK     ⛴ MARITIME · MOCK     ◈ CYBER LAB · SIMULATED";
+  position: absolute;
+  z-index: 4;
+  top: 4.5rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  overflow: hidden;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(103, 232, 249, .3);
+  border-radius: 0.65rem;
+  background: linear-gradient(90deg, rgba(2, 8, 23, .94), rgba(8, 47, 73, .78), rgba(2, 8, 23, .94));
+  color: #cffafe;
+  font: 700 9px/1.35 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(34, 211, 238, .55);
+  pointer-events: none;
+  animation: scene-banner-glow 3.2s ease-in-out infinite;
 }
 
 [aria-label^="Peta ilustratif simulasi"]::after {
-  content: "✈  AIR PATROL · MOCK     🌲  FOREST WATCH · MOCK     ⛴  MARITIME · MOCK     ◈  CYBER LAB · MOCK";
+  content: "✈";
   position: absolute;
-  z-index: 3;
-  left: 0;
-  top: 57%;
-  width: max-content;
-  max-width: none;
-  padding: 0.35rem 0.7rem;
-  border: 1px solid rgba(103, 232, 249, 0.18);
-  border-radius: 999px;
-  background: rgba(2, 8, 23, 0.72);
-  color: rgba(207, 250, 254, 0.78);
-  font: 700 8px/1.2 'JetBrains Mono', monospace;
-  letter-spacing: 0.08em;
-  white-space: pre;
+  z-index: 5;
+  top: 53%;
+  left: 8%;
+  color: #fbbf24;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  line-height: 1;
+  filter: drop-shadow(0 0 9px rgba(251, 191, 36, .9));
   pointer-events: none;
-  text-shadow: 0 0 10px rgba(34, 211, 238, 0.55);
-  animation: monitor-track-drift 26s linear infinite;
+  animation: rescue-aircraft-route 12s ease-in-out infinite;
 }
 
-@keyframes monitor-track-drift {
-  0% { transform: translateX(-45%); opacity: 0.25; }
-  12%, 82% { opacity: 0.9; }
-  100% { transform: translateX(100vw); opacity: 0.25; }
+@keyframes rescue-aircraft-route {
+  0% { transform: translate(0, 0) rotate(-8deg); opacity: .15; }
+  12% { opacity: 1; }
+  48% { transform: translate(30vw, -2.2rem) rotate(4deg); }
+  75% { transform: translate(58vw, .5rem) rotate(-4deg); opacity: .95; }
+  100% { transform: translate(75vw, -1rem) rotate(5deg); opacity: .1; }
 }
 
-/* CCTV tiles are generated graphics; sweep line makes their illustrative nature visible. */
+@keyframes scene-banner-glow {
+  0%, 100% { border-color: rgba(103, 232, 249, .22); box-shadow: 0 0 7px rgba(34, 211, 238, .08); }
+  50% { border-color: rgba(103, 232, 249, .65); box-shadow: 0 0 20px rgba(34, 211, 238, .2); }
+}
+
+/* CCTV tiles are generated mock scenes, never camera streams. */
 [aria-label$="ilustrasi CCTV sintetis"] {
   isolation: isolate;
+  background-image: linear-gradient(155deg, rgba(20, 83, 45, .35), transparent 48%, rgba(8, 47, 73, .35));
 }
 
 [aria-label$="ilustrasi CCTV sintetis"]::before {
   content: "";
   position: absolute;
   z-index: 4;
+  top: 0;
   left: 0;
   right: 0;
-  top: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.9), transparent);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.65);
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, .95), transparent);
+  box-shadow: 0 0 12px rgba(34, 211, 238, .65);
   pointer-events: none;
-  animation: mock-camera-sweep 4.5s ease-in-out infinite;
+  animation: mock-camera-sweep 3.8s linear infinite;
 }
 
 [aria-label$="ilustrasi CCTV sintetis"]::after {
-  content: "SIMULATED SCENE";
+  content: "SIMULATED SCENE · NO CAMERA";
   position: absolute;
   z-index: 5;
-  right: 0.45rem;
-  bottom: 1.65rem;
-  color: rgba(165, 243, 252, 0.75);
+  right: .4rem;
+  bottom: 1.55rem;
+  padding: .2rem .3rem;
+  border: 1px solid rgba(103, 232, 249, .25);
+  border-radius: .25rem;
+  background: rgba(2, 8, 23, .8);
+  color: rgba(165, 243, 252, .9);
   font: 700 6px/1 'JetBrains Mono', monospace;
-  letter-spacing: 0.1em;
+  letter-spacing: .06em;
   pointer-events: none;
-  animation: mock-label-pulse 2.8s ease-in-out infinite;
 }
 
 @keyframes mock-camera-sweep {
-  0% { transform: translateY(0); opacity: 0.15; }
-  50% { opacity: 0.9; }
-  100% { transform: translateY(108px); opacity: 0.15; }
+  from { transform: translateY(0); opacity: .18; }
+  50% { opacity: .9; }
+  to { transform: translateY(108px); opacity: .18; }
 }
 
-@keyframes mock-label-pulse {
-  0%, 100% { opacity: 0.48; }
-  50% { opacity: 1; }
-}
-
-/* Synthetic LMS event/progress visuals, without representing real learners. */
 section[aria-labelledby="lms-title"] {
-  background-image: linear-gradient(135deg, rgba(8, 47, 73, 0.16), transparent 55%);
-}
-
-section[aria-labelledby="lms-title"] [role="progressbar"] > span {
-  transition: width 700ms ease, filter 700ms ease;
-  filter: drop-shadow(0 0 5px rgba(103, 232, 249, 0.42));
+  background-image: linear-gradient(135deg, rgba(8, 47, 73, .22), transparent 60%);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  [aria-label^="Peta ilustratif simulasi"]::before,
   [aria-label^="Peta ilustratif simulasi"]::after,
-  [aria-label$="ilustrasi CCTV sintetis"]::before,
-  [aria-label$="ilustrasi CCTV sintetis"]::after {
+  [aria-label$="ilustrasi CCTV sintetis"]::before {
     animation: none !important;
   }
-  [aria-label^="Peta ilustratif simulasi"]::after {
-    left: 0.5rem;
-    transform: none;
-  }
+  [aria-label^="Peta ilustratif simulasi"]::after { display: none; }
 }
