@@ -47,6 +47,35 @@
 ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
+/* Persistent author watermark: decorative only, never blocks controls. */
+body::after {
+  content: "YcDev";
+  position: fixed;
+  z-index: 9999;
+  top: 7vh;
+  left: 5vw;
+  pointer-events: none;
+  user-select: none;
+  color: rgba(103, 232, 249, 0.58);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.75rem, 1.4vw, 1rem);
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 7px rgba(34, 211, 238, 0.95), 0 0 18px rgba(34, 211, 238, 0.7), 0 0 32px rgba(99, 102, 241, 0.55);
+  opacity: 0.72;
+  animation: ycdev-watermark-drift 32s ease-in-out infinite alternate;
+}
+
+@keyframes ycdev-watermark-drift {
+  0% { top: 7vh; left: 5vw; }
+  16% { top: 20vh; left: 78vw; }
+  33% { top: 74vh; left: 68vw; }
+  50% { top: 85vh; left: 12vw; }
+  67% { top: 48vh; left: 42vw; }
+  84% { top: 12vh; left: 52vw; }
+  100% { top: 68vh; left: 86vw; }
+}
+
 @keyframes radar-sweep {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -130,6 +159,7 @@
 @media (max-width: 767px) {
   .mobile-shell { min-height: 100dvh; }
   body { font-size: 14px; }
+  body::after { font-size: 0.7rem; letter-spacing: 0.12em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -139,10 +169,12 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  body::after { top: 7vh; left: 5vw; }
 }
 
 @media print {
   body { background: #ffffff !important; color: #0f172a !important; }
+  body::after { display: none !important; }
   .no-print { display: none !important; }
   .print-only { display: block !important; }
 }
